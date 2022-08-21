@@ -1,53 +1,26 @@
 <template>
   <q-page padding>
-    <q-btn @click="access">Ingresar</q-btn>
+    <!-- <q-btn @click="userStore.access">Ingresar</q-btn> -->
     <q-btn class="m-3" @click="createLink">Crear Link</q-btn>
-    {{ token }} -- {{ expireIn }}
+    <!-- <q-btn @click="userStore.logout">Cerrar Session</q-btn> -->
+    {{ userStore.token }} -- {{ userStore.expireIn }}
   </q-page>
 </template>
 
 <script setup>
 import { api } from "src/boot/axios";
-import { ref } from "vue-demi";
-const token = ref("");
-const expireIn = ref("");
-//const longlink = ref("");
-const access = async () => {
-  try {
-    const res = await api.post("/auth/login", {
-      email: "yudier@gmail.com",
-      password: "123456",
-    });
+import { useUserStore } from "../stores/user-store";
+const userStore = useUserStore();
+userStore.refreshToken();
 
-    token.value = res.data.token;
-    expireIn.value = res.data.expireIn;
-    setTime();
-  } catch (error) {
-    console.log(error);
-  }
-};
-const setTime = () => {
-  setTimeout(() => {
-    refreshToken();
-  }, expireIn.value * 1000 - 6000);
-};
-const refreshToken = async () => {
-  try {
-    const res = await api.get("/auth/refresh");
-    token.value = res.data.token;
-    expireIn.value = res.data.expireIn;
-    setTime();
-  } catch (error) {
-    console.log(error);
-  }
-};
 const createLink = async () => {
+  console.log(userStore.token);
   try {
     const res = await api({
       method: "POST",
       url: "/links",
       headers: {
-        Authorization: "Bearer " + token.value,
+        Authorization: "Bearer " + userStore.token,
       },
       data: {
         longlink:
@@ -59,5 +32,4 @@ const createLink = async () => {
     console.log(error);
   }
 };
-refreshToken();
 </script>
