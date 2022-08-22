@@ -65,7 +65,7 @@ const alertDialogBackend = (message = "Error en el servidor") => {
           ]"
         >
         </q-input>
-        <q-btn label="Login" type="submit" class="my-3"></q-btn>
+        <q-btn label="Register" type="submit" class="my-3"></q-btn>
       </q-form>
     </div>
   </q-page>
